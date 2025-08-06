@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import styles from './Modern.module.css';
 
 function GestionForm({ compromisoId, onCreated }) {
   const [fecha, setFecha] = useState('');
@@ -37,13 +38,13 @@ function GestionForm({ compromisoId, onCreated }) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form className={styles['gestion-form']} onSubmit={handleSubmit}>
       <h4>Agregar Gestión</h4>
       <input type="date" value={fecha} onChange={e => setFecha(e.target.value)} required />
       <input type="text" placeholder="Descripción" value={descripcion} onChange={e => setDescripcion(e.target.value)} required />
       <input type="file" accept=".pdf,.jpg" onChange={e => setArchivo(e.target.files[0])} required />
       <button type="submit" disabled={loading}>Guardar</button>
-      {error && <div style={{color:'red'}}>{error}</div>}
+      {error && <div className={styles.error}>{error}</div>}
     </form>
   );
 }

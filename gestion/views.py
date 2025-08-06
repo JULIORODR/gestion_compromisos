@@ -1,3 +1,12 @@
+# from rest_framework import generics
+from rest_framework import generics, permissions
+from .models import Usuario, Acta, Compromiso, Gestion
+from .serializers import UsuarioSerializer, ActaSerializer, CompromisoSerializer, GestionSerializer
+# Endpoint para listar usuarios
+class UsuarioListView(generics.ListAPIView):
+    queryset = Usuario.objects.all()
+    serializer_class = UsuarioSerializer
+    permission_classes = [permissions.IsAuthenticated]
 from rest_framework.views import APIView
 from rest_framework import generics, permissions, status, serializers
 from rest_framework.response import Response
@@ -26,7 +35,7 @@ class LoginView(APIView):
             })
         return Response({'error': 'Credenciales inválidas'}, status=status.HTTP_401_UNAUTHORIZED)
 
-class ActaListView(generics.ListAPIView):
+class ActaListView(generics.ListCreateAPIView):
     serializer_class = ActaSerializer
     permission_classes = [permissions.IsAuthenticated]
     def get_queryset(self):
@@ -42,6 +51,9 @@ class ActaListView(generics.ListAPIView):
         if fecha:
             queryset = queryset.filter(fecha=fecha)
         return queryset
+
+    def perform_create(self, serializer):
+        serializer.save(creador=self.request.user)
 
 class ActaDetailView(generics.RetrieveAPIView):
     queryset = Acta.objects.all()

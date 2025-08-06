@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Login from './Login';
 import ActasPanel from './ActasPanel';
 import ActaDetalle from './ActaDetalle';
+import styles from './Header.module.css';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -32,9 +33,12 @@ function App() {
 
   return (
     <div className="App">
-      <h2>Bienvenido, {user.username || 'usuario'}</h2>
-      <p>Tu rol: {user.rol}</p>
-      <button onClick={() => { localStorage.clear(); setUser(null); }}>Cerrar sesión</button>
+      <header className={styles.header}>
+        <div className={styles['header-title']}>Gestión de Actas, Compromisos y Gestiones</div>
+        <div className={styles['header-user']}>Bienvenido, {user.username || 'usuario'}</div>
+        <div className={styles['header-rol']}>Rol: {user.rol}</div>
+        <button className={styles['header-btn']} onClick={() => { localStorage.clear(); setUser(null); }}>Cerrar sesión</button>
+      </header>
       {mainView}
     </div>
   );

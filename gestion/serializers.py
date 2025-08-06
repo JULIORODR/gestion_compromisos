@@ -19,6 +19,8 @@ class CompromisoSerializer(serializers.ModelSerializer):
 
 class ActaSerializer(serializers.ModelSerializer):
     compromisos = CompromisoSerializer(many=True, read_only=True)
+    responsables = serializers.PrimaryKeyRelatedField(queryset=Usuario.objects.all(), many=True)
+    creador = serializers.PrimaryKeyRelatedField(read_only=True)
     class Meta:
         model = Acta
-        fields = ['id', 'titulo', 'estado', 'fecha', 'creador', 'responsables', 'compromisos']
+        fields = ['id', 'titulo', 'estado', 'fecha', 'pdf', 'creador', 'responsables', 'compromisos']

@@ -16,6 +16,7 @@ class Acta(models.Model):
     titulo = models.CharField(max_length=255)
     estado = models.CharField(max_length=10, choices=ESTADO_CHOICES)
     fecha = models.DateField()
+    pdf = models.FileField(upload_to='actas/', blank=True, null=True)
     creador = models.ForeignKey(Usuario, related_name='actas_creadas', on_delete=models.CASCADE)
     responsables = models.ManyToManyField(Usuario, related_name='actas_responsable')
 

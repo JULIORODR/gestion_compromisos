@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import styles from './ActasPanel.module.css';
+import ActaForm from './ActaForm';
 
 function ActasPanel() {
   const [actas, setActas] = useState([]);
   const [filtros, setFiltros] = useState({ estado: '', titulo: '', fecha: '' });
   const [loading, setLoading] = useState(false);
   const token = localStorage.getItem('token');
+  const rol = localStorage.getItem('rol');
 
   const fetchActas = async () => {
     setLoading(true);
@@ -33,6 +35,7 @@ function ActasPanel() {
   return (
     <div className={styles.panel}>
       <h2 style={{marginBottom:16}}>Panel de Actas</h2>
+      <ActaForm onCreated={fetchActas} />
       <form className={styles.filtros} onSubmit={handleBuscar}>
         <input name="titulo" placeholder="Título" value={filtros.titulo} onChange={handleFiltro} />
         <input name="fecha" type="date" value={filtros.fecha} onChange={handleFiltro} />
@@ -46,38 +49,61 @@ function ActasPanel() {
           Filtrar
         </button>
       </form>
-      {loading ? <p>Cargando...</p> : (
-        <div style={{overflowX:'auto'}}>
-          <table className={styles.tabla}>
-            <thead>
-              <tr>
-                <th>Título</th>
-                <th>Estado</th>
-                <th>Fecha</th>
-                <th>Compromisos</th>
-                <th>Detalle</th>
-              </tr>
-            </thead>
-            <tbody>
-              {actas.map(acta => (
-                <tr key={acta.id}>
-                  <td>{acta.titulo}</td>
-                  <td>{acta.estado}</td>
-                  <td>{acta.fecha}</td>
-                  <td>{acta.compromisos.length}</td>
-                  <td>
-                    <a href={`#/actas/${acta.id}`}>
-                      <button className={styles.boton} type="button">
-                        <svg className={styles.icono} viewBox="0 0 20 20" fill="none"><path d="M10 3a7 7 0 1 1 0 14A7 7 0 0 1 10 3zm0 2a5 5 0 1 0 0 10A5 5 0 0 0 10 5zm0 2a3 3 0 1 1 0 6A3 3 0 0 1 10 7z" fill="#fff"/></svg>
-                        Detalle
-                      </button>
-                    </a>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      {loading ? (
+        <div style={{textAlign:'center',margin:'32px 0'}}>
+          <svg width="48" height="48" viewBox="0 0 50 50" style={{marginBottom:8}}>
+            <circle cx="25" cy="25" r="20" stroke="#357ae8" strokeWidth="5" fill="none" strokeDasharray="90" strokeDashoffset="60">
+              <animateTransform attributeName="transform" type="rotate" from="0 25 25" to="360 25 25" dur="1s" repeatCount="indefinite"/>
+            </circle>
+          </svg>
+          <div style={{color:'#357ae8',fontWeight:500}}>Cargando actas...</div>
         </div>
+      ) : (
+        actas.length === 0 ? (
+          <div style={{textAlign:'center',color:'#e74c3c',margin:'32px 0',fontWeight:500}}>
+            No se encontraron actas con los filtros seleccionados.
+          </div>
+        ) : (
+          <div style={{overflowX:'auto'}}>
+            <table className={styles.tabla}>
+              <thead>
+                <tr>
+                  <th>Título</th>
+                  <th>Estado</th>
+                  <th>Fecha</th>
+                  <th>Compromisos</th>
+                  <th>Detalle</th>
+                </tr>
+              </thead>
+              <tbody>
+                {actas.map(acta => (
+                  <tr key={acta.id} style={{transition:'background 0.2s'}}>
+                    <td style={{fontWeight:600,color:'#357ae8'}}>{acta.titulo}</td>
+                    <td><span style={{padding:'4px 12px',borderRadius:8,background:acta.estado==='abierta'?'#eaf7ea':'#fbeaea',color:acta.estado==='abierta'?'#2ecc71':'#e74c3c',fontWeight:500}}>{acta.estado.charAt(0).toUpperCase()+acta.estado.slice(1)}</span></td>
+                    <td>{acta.fecha}</td>
+                    <td>
+                      {acta.compromisos.length === 0 ? <span style={{color:'#aaa'}}>Sin compromisos</span> : (
+                        <ul style={{margin:0,paddingLeft:18}}>
+                          {acta.compromisos.map(c => (
+                            <li key={c.id} style={{marginBottom:2}}>{c.descripcion}</li>
+                          ))}
+                        </ul>
+                      )}
+                    </td>
+                    <td>
+                      <a href={`#/actas/${acta.id}`}>
+                        <button className={styles.boton} type="button">
+                          <svg className={styles.icono} viewBox="0 0 20 20" fill="none"><path d="M10 3a7 7 0 1 1 0 14A7 7 0 0 1 10 3zm0 2a5 5 0 1 0 0 10A5 5 0 0 0 10 5zm0 2a3 3 0 1 1 0 6A3 3 0 0 1 10 7z" fill="#fff"/></svg>
+                          Detalle
+                        </button>
+                      </a>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )
       )}
     </div>
   );
