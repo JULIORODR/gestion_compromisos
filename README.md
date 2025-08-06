@@ -80,7 +80,7 @@ Este proyecto es un sistema completo para la gestión de actas, compromisos y ge
 - Los archivos solo pueden ser descargados por usuarios autenticados
 
 ## Créditos
-Desarrollado por JULIORODR con ayuda de GitHub Copilot.
+Desarrollado por JULIORODR 
 ## Instalación
 
 ### Backend
